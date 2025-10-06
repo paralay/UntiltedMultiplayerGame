@@ -5,9 +5,11 @@ public class Player : NetworkBehaviour
 {
     public float MoveSpeed { get; private set; } = 10f;
 
+    [SerializeField] private Material mat;
+
     void Start()
     {
-        
+        if(IsOwner) GetComponent<MeshRenderer>().material = mat;
     }
     void Update()
     {

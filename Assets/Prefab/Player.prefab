@@ -335,3 +335,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  mat: {fileID: 2100000, guid: c232095f71f158f4b8c766d827a0388d, type: 2}

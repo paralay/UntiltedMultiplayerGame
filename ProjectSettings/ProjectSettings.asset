@@ -899,7 +899,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -921,11 +927,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 164bae18-d7ae-4155-ac9f-5781a0bfb31f
+  cloudProjectId: 471359cc-a691-47cc-8bf0-19b73cc29b55
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: MultiplayerGame
-  organizationId: unity_8b48350e3bc192c872f8
+  organizationId: unity_1d43cc31c2f3b924a3d6
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

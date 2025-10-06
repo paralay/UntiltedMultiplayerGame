@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
 using Unity.Netcode;
-using Unity.Services.Core;
-using Unity.Services.Authentication;
-using Unity.Services.Relay;
-using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
-using System.Threading.Tasks;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+using UnityEngine;
 
 public class NetworkRelayManager : MonoBehaviour
 {
@@ -19,49 +19,31 @@ public class NetworkRelayManager : MonoBehaviour
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async Task<string> HostRelayAsync(int maxPlayers = 4)
+    // connectionType : "dtls" (sécurisé) ou "udp" (compatibilité)
+    public async Task<string> HostRelayAsync(int maxPlayers = 4, string connectionType = "dtls")
     {
         await InitServicesAsync();
 
-        Allocation alloc = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-        string joinCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
-        Debug.Log($"Relay Join Code: {joinCode}");
+        var allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
+        var relayServerData = AllocationUtils.ToRelayServerData(allocation, connectionType);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
-        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-        try
-        {
-            transport.SetRelayServerData(new RelayServerData(alloc, "dtls"));
-            Debug.Log("Using DTLS (secure) Relay connection");
-        }
-        catch
-        {
-            transport.SetRelayServerData(new RelayServerData(alloc, "udp"));
-            Debug.LogWarning("DTLS failed, falling back to UDP");
-        }
+        var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+        Debug.Log($"Relay Join Code: {joinCode} ({connectionType})");
 
         NetworkManager.Singleton.StartHost();
         return joinCode;
     }
 
-    public async Task JoinRelayAsync(string joinCode)
+    public async Task JoinRelayAsync(string joinCode, string connectionType = "dtls")
     {
         await InitServicesAsync();
 
-        JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(joinCode);
-        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode: joinCode);
+        var relayServerData = AllocationUtils.ToRelayServerData(allocation, connectionType);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
-        try
-        {
-            transport.SetRelayServerData(new RelayServerData(joinAlloc, "dtls"));
-            Debug.Log("Client using DTLS (secure)");
-        }
-        catch
-        {
-            transport.SetRelayServerData(new RelayServerData(joinAlloc, "udp"));
-            Debug.LogWarning("Client fallback to UDP");
-        }
-
+        Debug.Log($"Client joining with {connectionType}");
         NetworkManager.Singleton.StartClient();
     }
 }

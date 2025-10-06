@@ -6,6 +6,7 @@ public class Player : NetworkBehaviour
     public float MoveSpeed { get; private set; } = 10f;
 
     [SerializeField] private Material mat;
+    [SerializeField] private Camera playerCamera;
 
     void Start()
     {
@@ -19,5 +20,16 @@ public class Player : NetworkBehaviour
                 0,
                 Input.GetAxis("Vertical")
             ); 
+    }
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            playerCamera.gameObject.SetActive(true);
+        }
+        else
+        {
+            playerCamera.gameObject.SetActive(false);
+        }
     }
 }

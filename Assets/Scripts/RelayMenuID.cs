@@ -12,17 +12,17 @@ public class RelayMenuUI : MonoBehaviour
         relay = Object.FindFirstObjectByType<NetworkRelayManager>();
     }
 
-    public async void OnHostClicked()
-    {
-        string code = await relay.HostRelayAsync();
-        joinCodeDisplay.text = $"Join Code: {code}";
-    }
+    //public async void OnHostClicked()
+    //{
+    //    string code = await relay.HostRelayAsync();
+    //    joinCodeDisplay.text = $"Join Code: {code}";
+    //}
 
-    public async void OnJoinClicked()
-    {
-        string code = joinCodeInput.text.Trim();
-        if (string.IsNullOrEmpty(code)) return;
+    //public async void OnJoinClicked()
+    //{
+    //    string code = joinCodeInput.text.Trim();
+    //    if (string.IsNullOrEmpty(code)) return;
 
-        await relay.JoinRelayAsync(code);
-    }
+    //    await relay.JoinRelayAsync(code);
+    //}
 }

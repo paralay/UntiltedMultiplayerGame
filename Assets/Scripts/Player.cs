@@ -28,12 +28,15 @@ public class Player : NetworkBehaviour
     }
     void Update()
     {
-        transform.position += MoveSpeed * Time.deltaTime * new Vector3
+        transform.position += MoveSpeed * Time.deltaTime * 
+            transform.TransformDirection(
+            new Vector3
             (
                 Input.GetAxis("Horizontal"),
                 0,
                 Input.GetAxis("Vertical")
-            ); 
+            )
+        );
     }
     public override void OnNetworkSpawn()
     {
@@ -64,6 +67,6 @@ public class Player : NetworkBehaviour
         };
 
 
-        if (IsOwner) { nameTag.text += " (you)"; }
+        if (IsOwner) { nameTag.text += "\n(you)"; }
     }
 }

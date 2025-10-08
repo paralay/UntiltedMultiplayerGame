@@ -13,5 +13,6 @@ public class PlayerNameInputField : MonoBehaviour
     void ValueChange(string pString)
     {
         PlayerPrefs.SetString("PlayerName", pString);
+        StartUI.instance.UpdatePlayerState();
     }
 }

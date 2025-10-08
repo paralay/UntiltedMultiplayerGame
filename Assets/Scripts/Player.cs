@@ -42,7 +42,11 @@ public class Player : NetworkBehaviour
     {
         if (IsOwner)
         {
-            PlayerColor.Value = Random.ColorHSV();
+            StartUI.instance.PlayerConnect();
+            StartUI.instance.playerUpdatedEvent += UpdatePlayer;
+            PlayerColor.Value = clientData.playerColor;
+
+            
 
             string localName = PlayerPrefs.GetString("PlayerName", $"Player{OwnerClientId}");
             PlayerName.Value = localName;
@@ -60,6 +64,8 @@ public class Player : NetworkBehaviour
 
         PlayerName.OnValueChanged += (oldName, newName) => {
                 nameTag.text = newName.ToString();
+                if (IsOwner) { nameTag.text += "\n(you)"; 
+            }
         };
 
         PlayerColor.OnValueChanged += (oldColor, newColor) => {
@@ -68,5 +74,28 @@ public class Player : NetworkBehaviour
 
 
         if (IsOwner) { nameTag.text += "\n(you)"; }
+    }
+
+    public void UpdatePlayer()
+    {
+        if (IsOwner)
+        {
+            PlayerColor.Value = clientData.playerColor;
+
+            string localName = PlayerPrefs.GetString("PlayerName", $"Player{OwnerClientId}");
+            PlayerName.Value = localName;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            StartUI.instance.playerUpdatedEvent -= UpdatePlayer;
+            StartUI.instance.PlayerDisconnect();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            playerCamera.gameObject.SetActive(false);
+        }
     }
 }
